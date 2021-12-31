@@ -41,10 +41,12 @@ App = {
       console.log('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
   },
+
   loadAccount: async () => {
     App.account = web3.eth.accounts[0]
     web3.eth.defaultAccount = web3.eth.accounts[0];
   },
+
   loadContract: async () => {
     const todoList = await $.getJSON('TodoList.json');
     App.contracts.TodoList = TruffleContract(todoList)
@@ -80,7 +82,7 @@ App = {
       $newTaskTemplate.find('input')
         .prop('name', taskId)
         .prop('checked', taskCompleted)
-      /*  .on('click', App.toggleCompleted)*/
+        .on('click', App.toggleCompleted)
 
 
       // Put the task in the correct list
@@ -101,6 +103,13 @@ App = {
     const content = $('#newTask').val()
     await App.todoList.createTask(content);
     window.location.reload()
+  },
+
+  toggleCompleted: async (e) => {
+    App.setLoading(true)
+    const taskId = e.target.name;
+    await App.todoList.toggleCompleted(taskId);
+    window.location.reload();
   },
 
   setLoading: (boolean) => {
